@@ -2,7 +2,7 @@ using KitchenDiary.API.Data;
 using KitchenDiary.API.DTOs;
 using KitchenDiary.API.Interfaces;
 using KitchenDiary.API.Models;
-
+using Microsoft.EntityFrameworkCore;
 namespace KitchenDiary.API.Services;
 
 public class RecipeService : IRecipeService
@@ -16,19 +16,70 @@ public class RecipeService : IRecipeService
 
     public async Task<RecipeDto> CreateRecipeAsync(CreateRecipeDto recipeDto)
     {
-        var recipe = new Recipe
-        {
-            Title = recipeDto.Title,
-            Summary = recipeDto.Summary,
-            Rating = recipeDto.Rating,
-            Notes = recipeDto.Notes,
-            DateAdded = DateTime.UtcNow
-        };
+        var recipe = new Recipe();
+        MapToRecipe(recipeDto, recipe);
+        recipe.DateAdded= DateTime.UtcNow;
 
         _context.Recipes.Add(recipe);
 
         await _context.SaveChangesAsync();
 
+        return MapToRecipeDto(recipe);
+    }
+    public async Task<IEnumerable<RecipeDto>> GetAllRecipesAsync()
+    {
+        var recipes = await _context.Recipes.ToListAsync();
+
+        return recipes.Select(MapToRecipeDto);
+    }
+    public async Task<RecipeDto?> GetRecipeByIdAsync(int id)
+    {
+        var recipe = await _context.Recipes.FindAsync(id);
+
+        if (recipe == null)
+            return null;
+
+        return MapToRecipeDto(recipe);
+    }
+    public async Task<RecipeDto?> UpdateRecipeAsync(int id, CreateRecipeDto recipeDto)
+    {
+        var recipe = await _context.Recipes.FindAsync(id);
+
+        if (recipe == null)
+            return null;
+
+        MapToRecipe(recipeDto, recipe);
+
+        await _context.SaveChangesAsync();
+
+        return MapToRecipeDto(recipe);
+    }
+    public async Task<bool> DeleteRecipeAsync(int id)
+    {
+        var recipe = await _context.Recipes.FindAsync(id);
+
+        if (recipe == null)
+            return false;
+
+        _context.Recipes.Remove(recipe);
+
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
+    public async Task<IEnumerable<RecipeDto>> SearchRecipesAsync(string searchTerm)
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm))
+            return await GetAllRecipesAsync();
+
+        var recipes = await _context.Recipes
+                .Where(recipe => recipe.Title.ToLower().Contains(searchTerm.ToLower())).ToListAsync();
+
+        return recipes.Select(MapToRecipeDto);
+    }
+    //Helper Mthods
+    private static RecipeDto MapToRecipeDto(Recipe recipe)
+    {
         return new RecipeDto
         {
             Id = recipe.Id,
@@ -38,5 +89,12 @@ public class RecipeService : IRecipeService
             Notes = recipe.Notes,
             DateAdded = recipe.DateAdded
         };
+    }
+    private static void MapToRecipe(CreateRecipeDto dto, Recipe recipe)
+    {
+        recipe.Title = dto.Title;
+        recipe.Summary = dto.Summary;
+        recipe.Rating = dto.Rating;
+        recipe.Notes = dto.Notes;
     }
 }
