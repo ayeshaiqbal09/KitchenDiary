@@ -13,4 +13,5 @@ public class RecipeDto
     public string? Notes { get; set; }
 
     public DateTime DateAdded { get; set; }
+    public List<IngredientDto> Ingredients{get; set;}=[];
 }

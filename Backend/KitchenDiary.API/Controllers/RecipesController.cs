@@ -8,10 +8,12 @@ namespace KitchenDiary.API.Controllers;
 public class RecipesController : ControllerBase
 {
     private readonly IRecipeService _recipeService;
+    private readonly IIngredientService _ingredientService;
 
-    public RecipesController(IRecipeService recipeService)
+    public RecipesController(IRecipeService recipeService, IIngredientService ingredientService)
     {
         _recipeService = recipeService;
+        _ingredientService=ingredientService;
     }
     [HttpPost]
     public async Task<ActionResult<RecipeDto>> CreateRecipe(CreateRecipeDto recipeDto)
@@ -56,5 +58,28 @@ public class RecipesController : ControllerBase
         var recipes = await _recipeService.SearchRecipesAsync(searchTerm);
 
         return Ok(recipes);
+    }
+    
+    [HttpPost("{recipeId}/ingredients")]
+    public async Task<ActionResult<IngredientDto>> AddIngredient(int id, CreateIngredientDto ingredientDto)
+    {
+        var createdIngredient = await _ingredientService.AddIngredientAsync(id, ingredientDto);
+        if(createdIngredient==null)
+        {
+            return NotFound();
+        }
+
+        return CreatedAtAction(nameof(AddIngredient), new { id = createdIngredient.Id },
+        createdIngredient);
+    }
+    [HttpDelete("ingridients/{ingredientId}")]
+    public async Task<IActionResult> DeleteIngredient(int ingredientId)
+    {
+        var deleted = await _ingredientService.DeleteIngredientAsync(ingredientId);
+
+        if (!deleted)
+            return NotFound();
+
+        return NoContent();
     }
 }

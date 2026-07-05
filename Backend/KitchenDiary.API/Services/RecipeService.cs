@@ -34,12 +34,30 @@ public class RecipeService : IRecipeService
     }
     public async Task<RecipeDto?> GetRecipeByIdAsync(int id)
     {
-        var recipe = await _context.Recipes.FindAsync(id);
+        var recipe = await _context.Recipes.Include(r=> r.Ingredients).
+        FirstOrDefaultAsync(r => r.Id==id);
 
         if (recipe == null)
             return null;
 
-        return MapToRecipeDto(recipe);
+        return new RecipeDto
+        {
+            Id = recipe.Id,
+            Title = recipe.Title,
+            Summary = recipe.Summary,
+            Rating = recipe.Rating,
+            Notes = recipe.Notes,
+            DateAdded = recipe.DateAdded,
+
+            Ingredients = recipe.Ingredients
+                .Select(i => new IngredientDto
+                {
+                    Id = i.Id,
+                    Name = i.Name,
+                    Quantity = i.Quantity
+                })
+                .ToList()
+        };
     }
     public async Task<RecipeDto?> UpdateRecipeAsync(int id, CreateRecipeDto recipeDto)
     {
