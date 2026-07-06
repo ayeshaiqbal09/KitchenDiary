@@ -15,7 +15,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 builder.Services.AddScoped<IRecipeService, RecipeService>();
 builder.Services.AddControllers();
-
+builder.Services.AddScoped<IIngredientService, IngredientService>();
+builder.Services.AddScoped<IRecipeStepService, RecipeStepService>();
+builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<ITagService, TagService>();
 var app = builder.Build();
 app.MapControllers();
 
@@ -27,6 +30,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 var summaries = new[]
 {

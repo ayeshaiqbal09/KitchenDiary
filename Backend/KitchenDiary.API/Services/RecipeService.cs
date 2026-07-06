@@ -34,7 +34,7 @@ public class RecipeService : IRecipeService
     }
     public async Task<RecipeDto?> GetRecipeByIdAsync(int id)
     {
-        var recipe = await _context.Recipes.Include(r=> r.Ingredients).
+        var recipe = await _context.Recipes.Include(r=> r.Ingredients).Include(r => r.Steps).Include(r => r.Images).Include(r => r.RecipeTags).
         FirstOrDefaultAsync(r => r.Id==id);
 
         if (recipe == null)
