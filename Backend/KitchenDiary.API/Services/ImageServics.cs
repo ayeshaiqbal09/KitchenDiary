@@ -10,9 +10,11 @@ public class ImageService : IImageService
 {
     private readonly ApplicationDbContext _context;
     private readonly IWebHostEnvironment _environment;
-    public ImageService(ApplicationDbContext context, IWebHostEnvironment environment)
+    private readonly ILogger<RecipeService> _logger;
+    public ImageService(ApplicationDbContext context, IWebHostEnvironment environment, ILogger<RecipeService> logger)
     {
-        _context=context;
+        _context = context;
+        _logger = logger;
         _environment=environment;
     }
     public async Task<RecipeImageDto?> AddRecipeImageAsync(int recipeId,
@@ -21,13 +23,37 @@ public class ImageService : IImageService
     var recipe = await _context.Recipes.FindAsync(recipeId);
 
     if (recipe == null)
+    {
+        _logger.LogWarning("Recipe {RecipeId} not found.", recipeId);
         return null;
+    }
     if (imageDto.Image == null || imageDto.Image.Length == 0)
     {
         return null;
     }
-    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageDto.Image.FileName);
+    const long maxFileSize = 5 * 1024 * 1024;
+    if (imageDto.Image.Length > maxFileSize)
+    {
+        _logger.LogWarning("Image upload rejected because the file exceeded the maximum size.");
+
+        return null;
+    }
+    var allowedExtensions = new[]
+    {
+        ".jpg",
+        ".jpeg",
+        ".png"
+    };
     
+    var extension =Path.GetExtension(imageDto.Image.FileName).ToLowerInvariant();
+    if (!allowedExtensions.Contains(extension))
+    {
+        _logger.LogWarning("Image upload rejected because of invalid file type.");
+
+        return null;
+    }
+    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageDto.Image.FileName);
+
     var webRoot = _environment.WebRootPath;
     
     var uploadsFolder = Path.Combine(webRoot, "uploads", "recipes");
@@ -49,6 +75,8 @@ public class ImageService : IImageService
     _context.RecipeImages.Add(recipeImage);
 
     await _context.SaveChangesAsync();
+    _logger.LogInformation("Image for {RecipeId} added successfully.",
+        recipe.Id);
     return new RecipeImageDto
     {
         Id = recipeImage.Id,

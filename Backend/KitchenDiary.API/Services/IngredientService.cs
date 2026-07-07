@@ -9,15 +9,18 @@ namespace KitchenDiary.API.Services;
 public class IngredientService : IIngredientService
 {
     private readonly ApplicationDbContext _context;
-    public IngredientService(ApplicationDbContext context)
+    private readonly ILogger<RecipeService> _logger;
+    public IngredientService(ApplicationDbContext context, ILogger<RecipeService> logger)
     {
-        _context=context;
+        _context = context;
+        _logger = logger;
     }
     public async Task<IngredientDto?> AddIngredientAsync(int recipeId, CreateIngredientDto ingredientDto)
     {
         var recipe= await _context.Recipes.FindAsync(recipeId);
-        if(recipe==null)
+        if (recipe == null)
         {
+            _logger.LogWarning("Recipe {RecipeId} not found.", recipeId);
             return null;
         }
        
@@ -28,6 +31,8 @@ public class IngredientService : IIngredientService
         };
         _context.Ingredients.Add(ingredient);
         await _context.SaveChangesAsync();
+        _logger.LogInformation("Ingredients for {RecipeId} added successfully.",
+        recipe.Id);
 
         return new IngredientDto
         {
@@ -42,11 +47,15 @@ public class IngredientService : IIngredientService
         var ingredient=await _context.Ingredients.FindAsync(ingredientId);
         if(ingredient==null)
         {
+         _logger.LogWarning("Ingredient for {RecipeId} not found.", ingredientId);
+
             return null;
         }
         ingredient.Name=ingredientDto.Name;
         ingredient.Quantity=ingredientDto.Quantity;
         await _context.SaveChangesAsync();
+        _logger.LogInformation("Ingredients for {ingredientId} updated successfully.",
+        ingredientId);
         return new IngredientDto
         {
             Id=ingredient.Id,
@@ -63,6 +72,8 @@ public class IngredientService : IIngredientService
         }
         _context.Ingredients.Remove(ingredient);
         await _context.SaveChangesAsync();
+        _logger.LogInformation("Ingredients for {ingredientId} deleted successfully.",
+        ingredientId);
         return true;
     }
 }

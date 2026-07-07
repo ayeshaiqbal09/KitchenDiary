@@ -8,10 +8,12 @@ namespace KitchenDiary.API.Services;
 public class RecipeStepService : IRecipeStepService
 {
     private readonly ApplicationDbContext _context;
+        private readonly ILogger<RecipeService> _logger;
 
-    public RecipeStepService(ApplicationDbContext context)
+    public RecipeStepService(ApplicationDbContext context, ILogger<RecipeService> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public async Task<RecipeStepDto?> AddRecipeStepAsync(int recipeId, CreateRecipeStepDto recipeStepDto)
@@ -19,6 +21,7 @@ public class RecipeStepService : IRecipeStepService
         var recipe=await _context.Recipes.FindAsync(recipeId);
         if(recipe==null)
         {
+            _logger.LogWarning("Recipe not found.");
             return null;
         }
         var recipeStep= new RecipeStep
@@ -29,6 +32,8 @@ public class RecipeStepService : IRecipeStepService
         };
         _context.RecipeSteps.Add(recipeStep);
         await _context.SaveChangesAsync();
+         _logger.LogInformation("Recipe Steps for {RecipeId} added successfully.",
+        recipe.Id);
 
         return new RecipeStepDto
         {
@@ -44,10 +49,13 @@ public class RecipeStepService : IRecipeStepService
         var step= await _context.RecipeSteps.FindAsync(stepId);
         if(step == null)
         {
+            _logger.LogWarning("Step not found.");
             return false;
         }
         _context.RecipeSteps.Remove(step);
         await _context.SaveChangesAsync();
+         _logger.LogInformation("Recipe Step {stepid} deleted successfully.",
+        stepId);
         return true;
     }
 
@@ -56,6 +64,7 @@ public class RecipeStepService : IRecipeStepService
         var step= await _context.RecipeSteps.FindAsync(stepId);
         if(step == null)
         {
+            _logger.LogWarning("Step not found.");
             return null;
         }
         
@@ -64,6 +73,8 @@ public class RecipeStepService : IRecipeStepService
            
         
         await _context.SaveChangesAsync();
+         _logger.LogInformation("Recipe Step  {RecipeId} updated successfully.",
+        stepId);
         return new RecipeStepDto
         {
             Id=step.Id,

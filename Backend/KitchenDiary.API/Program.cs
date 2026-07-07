@@ -2,6 +2,7 @@ using KitchenDiary.API.Data;
 using Microsoft.EntityFrameworkCore;
 using KitchenDiary.API.Interfaces;
 using KitchenDiary.API.Services;
+using KitchenDiary.API.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,6 +21,7 @@ builder.Services.AddScoped<IRecipeStepService, RecipeStepService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ITagService, TagService>();
 var app = builder.Build();
+app.UseMiddleware<ExceptionMiddleware>();
 app.MapControllers();
 
 // Configure the HTTP request pipeline.

@@ -26,7 +26,33 @@ public class ApplicationDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+         
         modelBuilder.Entity<RecipeTag>()
             .HasKey(rt => new { rt.RecipeId, rt.TagId });
+
+        modelBuilder.Entity<Ingredient>()
+        .HasOne(i => i.Recipe)
+        .WithMany(r => r.Ingredients)
+        .HasForeignKey(i => i.RecipeId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<RecipeStep>()
+        .HasOne(s => s.Recipe)
+        .WithMany(r => r.Steps)
+        .HasForeignKey(s => s.RecipeId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<RecipeImage>()
+        .HasOne(i => i.Recipe)
+        .WithMany(r => r.Images)
+        .HasForeignKey(i => i.RecipeId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<RecipeTag>()
+        .HasOne(rt => rt.Recipe)
+        .WithMany(r => r.RecipeTags)
+        .HasForeignKey(rt => rt.RecipeId)
+        .OnDelete(DeleteBehavior.Cascade);
+       
     }
 }

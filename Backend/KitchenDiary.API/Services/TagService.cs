@@ -8,16 +8,19 @@ namespace KitchenDiary.API.Services;
 public class TagService : ITagService
 {
     private readonly ApplicationDbContext _context;
-    public TagService(ApplicationDbContext context)
-    {
-        _context=context;
-    }
+    private readonly ILogger<RecipeService> _logger;
 
+    public TagService(ApplicationDbContext context, ILogger<RecipeService> logger)
+    {
+        _context = context;
+        _logger = logger;
+    }
     public async Task<TagDto?> AddTagToRecipeAsync(int recipeId, CreateTagDto tagDto)
     {
         var recipe = await _context.Recipes.FindAsync(recipeId);
         if(recipe == null)
         {
+            _logger.LogWarning("Recipe not found.");
             return null;
         }
         var tag = await _context.Tags.FirstOrDefaultAsync(
@@ -32,6 +35,8 @@ public class TagService : ITagService
             _context.Tags.Add(tag);
 
             await _context.SaveChangesAsync();
+            _logger.LogInformation("Recipe tag for {RecipeId} created successfully.",
+        recipe.Id);
         }
         var alreadyTagged = await _context.RecipeTags.AnyAsync( rt => rt.RecipeId == recipeId &&
           rt.TagId == tag.Id);
@@ -52,6 +57,8 @@ public class TagService : ITagService
         _context.RecipeTags.Add(recipeTag);
 
         await _context.SaveChangesAsync();
+        _logger.LogInformation("Recipe tag for {RecipeId} added successfully.",
+        recipe.Id);
         return new TagDto
         {
             Id = tag.Id,
@@ -68,12 +75,14 @@ public class TagService : ITagService
 
     if (recipeTag == null)
     {
+        _logger.LogWarning("Recipe Tag not found.");
         return false;
     }
 
     _context.RecipeTags.Remove(recipeTag);
 
     await _context.SaveChangesAsync();
+    _logger.LogInformation("Recipe Tag removed successfully");
 
     return true;
 

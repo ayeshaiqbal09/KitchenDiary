@@ -14,4 +14,9 @@ public class RecipeDto
 
     public DateTime DateAdded { get; set; }
     public List<IngredientDto> Ingredients{get; set;}=[];
+    public List<RecipeStepDto> Steps { get; set; } = [];
+
+    public List<RecipeImageDto> Images { get; set; } = [];
+
+    public List<TagDto> Tags { get; set; } = [];
 }
