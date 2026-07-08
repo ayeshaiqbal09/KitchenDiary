@@ -61,3 +61,10 @@ main{
     color: var(--text-color);
     font-size:2rem;
 }
+.recipe-grid
+{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 30px;
+}

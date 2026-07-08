@@ -31,8 +31,14 @@ public class RecipesController : ControllerBase
 
         return CreatedAtAction(nameof(CreateRecipe), new { id = createdRecipe.Id }, createdRecipe);
     }
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<RecipeDto>>> GetAllRecipes()
+    {
+        var recipes = await _recipeService.GetAllRecipesAsync();
+        return Ok(recipes);
+    }
     [HttpGet("{id}")]
-    public async Task<ActionResult<RecipeDto>> GetRecipe(int id)
+    public async Task<ActionResult<RecipeDto>> GetRecipeById(int id)
     {
         var recipe = await _recipeService.GetRecipeByIdAsync(id);
 
