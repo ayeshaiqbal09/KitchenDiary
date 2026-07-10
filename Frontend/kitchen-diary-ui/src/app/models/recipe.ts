@@ -1,12 +1,12 @@
-export interface Recipe
-{
-    id : number;
-
-    title: string;
-
-    rating: number;
-
-    recipeType: string;
-    
-    coverImage?: string;
+export interface Recipe {
+  id: number;
+  title: string;
+  summary: string;
+  rating: number;
+  notes: string;
+  dateAdded: string;
+  ingredients: any[];
+  steps: any[];
+  images: any[];
+  tags: any[];
 }
