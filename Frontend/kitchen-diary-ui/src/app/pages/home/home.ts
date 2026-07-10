@@ -15,30 +15,23 @@ export class Home implements OnInit {
   recipes: Recipe[] = [];
 
   constructor(
-  private recipeService: RecipeService,
-  private cdr: ChangeDetectorRef
-) {}
+  private recipeService: RecipeService) {}
 
   ngOnInit(): void {
 
-  console.log('Home loaded');
-
-  this.recipeService.getRecipes().subscribe({
+    this.recipeService.getRecipes().subscribe({
     next: (recipes) => {
   console.log('SUCCESS');
   console.log(recipes);
 
+  queueMicrotask(() => {
   this.recipes = recipes;
-
-  console.log('Length after assignment:', this.recipes.length);
-
-  this.cdr.detectChanges();
+});
 },
 
     error: (err) => {
-      console.log('FAILED');
-      console.error(err);
-    }
+        console.error('Failed to load recipes', err);
+     }
   });
 
 }
