@@ -165,6 +165,17 @@ public class RecipesController : ControllerBase
             new { id = createdImage.Id },
             createdImage);
     }
+    [HttpDelete("images/{imageId}")]
+public async Task<IActionResult> DeleteImage(int imageId)
+{
+    var deleted =
+        await _imageService.DeleteRecipeImageAsync(imageId);
+
+    if (!deleted)
+        return NotFound();
+
+    return NoContent();
+}
     [HttpPost("{recipeId}/tags")]
     public async Task<ActionResult<TagDto>> AddTag(int recipeId, CreateTagDto tagDto)
     {
@@ -192,4 +203,19 @@ public class RecipesController : ControllerBase
     return NoContent();
         
     }
+    [HttpPut("{recipeId}/cover/{imageId}")]
+public async Task<IActionResult> SetCoverImage(
+    int recipeId,
+    int imageId)
+{
+    var success =
+        await _imageService.SetCoverImageAsync(
+            recipeId,
+            imageId);
+
+    if (!success)
+        return NotFound();
+
+    return NoContent();
+}
 }

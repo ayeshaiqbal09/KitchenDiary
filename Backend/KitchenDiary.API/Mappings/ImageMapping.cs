@@ -10,7 +10,8 @@ public static class ImageMappings
         return new RecipeImageDto
         {
             Id = image.Id,
-            ImagePath = image.ImagePath
+            ImagePath = image.ImagePath,
+            IsCoverImage = image.IsCoverImage
         };
     }
 }

@@ -7,7 +7,7 @@ public class CreateRecipeDto
     [Required]
     [StringLength(100, MinimumLength = 2)]
     public string Title { get; set; } = string.Empty;
-    
+
     [StringLength(500)]
     public string? Summary { get; set; }
 
@@ -16,4 +16,10 @@ public class CreateRecipeDto
 
     [StringLength(5000)]
     public string? Notes { get; set; }
+
+    public List<CreateIngredientDto> Ingredients { get; set; } = [];
+
+    public List<string> Steps { get; set; } = [];
+
+    public List<string> Tags { get; set; } = [];
 }

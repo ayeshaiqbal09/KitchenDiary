@@ -1,0 +1,39 @@
+<article class="recipe-card" (click)="viewRecipe()">
+
+  <div class="recipe-image">
+
+    @if (getCoverImage()) {
+
+        <img
+            [src]="getCoverImage()"
+            class="cover-image">
+
+    }
+
+    <div class="image-overlay">
+
+        <button class="view-btn">
+
+            View Recipe →
+
+        </button>
+
+    </div>
+
+</div>
+
+  <div class="recipe-content">
+
+    <h3>{{ recipe.title }}</h3>
+
+    <p class="summary">
+      {{ recipe.summary }}
+    </p>
+
+    <div class="rating">
+      ⭐ {{ recipe.rating }}
+    </div>
+
+  </div>
+
+</article>

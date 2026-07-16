@@ -2,7 +2,7 @@ using KitchenDiary.API.Data;
 using KitchenDiary.API.DTOs;
 using KitchenDiary.API.Interfaces;
 using KitchenDiary.API.Models;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace KitchenDiary.API.Services;
 
@@ -83,5 +83,55 @@ public class ImageService : IImageService
         ImagePath = recipeImage.ImagePath
     };
     
+}
+public async Task<bool> DeleteRecipeImageAsync(int imageId)
+{
+    var image = await _context.RecipeImages.FindAsync(imageId);
+
+    if (image == null)
+        return false;
+
+    var filePath = Path.Combine(
+        _environment.ContentRootPath,
+        image.ImagePath);
+
+    if (File.Exists(filePath))
+    {
+        File.Delete(filePath);
+    }
+
+    _context.RecipeImages.Remove(image);
+
+    await _context.SaveChangesAsync();
+
+    return true;
+}
+public async Task<bool> SetCoverImageAsync(
+    int recipeId,
+    int imageId)
+{
+    var recipe = await _context.Recipes
+        .Include(r => r.Images)
+        .FirstOrDefaultAsync(r => r.Id == recipeId);
+
+    if (recipe == null)
+        return false;
+
+    foreach (var image in recipe.Images)
+    {
+        image.IsCoverImage = false;
+    }
+
+    var selected =
+        recipe.Images.FirstOrDefault(i => i.Id == imageId);
+
+    if (selected == null)
+        return false;
+
+    selected.IsCoverImage = true;
+
+    await _context.SaveChangesAsync();
+
+    return true;
 }
 }

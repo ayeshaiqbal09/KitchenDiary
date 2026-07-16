@@ -34,24 +34,31 @@ public static class RecipeMappings
     };
 }
     public static Recipe ToRecipe(this CreateRecipeDto dto)
+{
+    return new Recipe
     {
-        return new Recipe
-        {
-            Title = dto.Title,
-            Summary = dto.Summary,
-            Rating = dto.Rating,
-            Notes = dto.Notes,
-            DateAdded = DateTime.UtcNow
-        };
-    }
-    public static void UpdateRecipe(
-    this Recipe recipe,
-    CreateRecipeDto dto)
+        Title = dto.Title,
+        Summary = dto.Summary,
+        Rating = dto.Rating,
+        Notes = dto.Notes,
+        DateAdded = DateTime.UtcNow,
+
+       Ingredients = dto.Ingredients
+    .Select(i => new Ingredient
     {
-        recipe.Title = dto.Title;
-        recipe.Summary = dto.Summary;
-        recipe.Rating = dto.Rating;
-        recipe.Notes = dto.Notes;
-    }
+        Name = i.Name,
+        Quantity = i.Quantity
+    })
+    .ToList(),
+        Steps = dto.Steps
+            .Select((step, index) => new RecipeStep
+            {
+                StepNumber = index + 1,
+                Instruction = step
+            })
+            .ToList()
+    };
+}
+    
 
 }

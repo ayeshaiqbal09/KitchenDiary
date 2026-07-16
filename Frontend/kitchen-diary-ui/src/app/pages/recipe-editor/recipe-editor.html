@@ -1,0 +1,496 @@
+<main>
+<a routerLink="/" class="back-link">
+    ← Back to Recipes
+</a>
+    <div class="editor-header">
+
+    <h1>
+
+        @if(isCreateMode){
+
+             New Recipe
+
+        } @else {
+
+            
+
+        }
+
+    </h1>
+
+    <p>
+
+        @if(isCreateMode){
+
+            Start writing your next favourite recipe.
+
+        } @else {
+
+            Your personal recipe page.
+
+        }
+
+    </p>
+
+</div>
+@if(isEditMode) {
+    
+<div class="editor-card">
+
+    <form
+        [formGroup]="recipeForm"
+        (ngSubmit)="onSubmit()">
+
+        <div class="form-group">
+
+            <label>Title</label>
+
+            <input
+                type="text"
+                formControlName="title"
+                [readonly]="!isEditMode">
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Summary</label>
+
+            <textarea
+                rows="4"
+                formControlName="summary"
+                [readonly]="!isEditMode">
+            </textarea>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Rating</label>
+
+            <input
+                type="number"
+                min="1"
+                max="5"
+                formControlName="rating"
+                [readonly]="!isEditMode">
+
+        </div>
+        <div class="form-group">
+
+    <label>Ingredients</label>
+
+    <div formArrayName="ingredients">
+
+        @for (ingredient of ingredients.controls; track $index) {
+
+            <div
+    class="ingredient-row"
+    [formGroupName]="$index">
+
+    <input
+        formControlName="name"
+        type="text"
+        placeholder="Ingredient">
+
+    <input
+        formControlName="quantity"
+        type="text"
+        placeholder="Quantity">
+
+    <button
+        type="button"
+        class="remove-btn"
+        (click)="removeIngredient($index)">
+
+        ✕
+
+    </button>
+
+</div>
+
+        }
+
+    </div>
+
+    <button
+        type="button"
+        class="add-btn"
+        (click)="addIngredient()">
+
+        + Add Ingredient
+
+    </button>
+
+</div>
+<div class="form-group">
+
+    <label>Steps</label>
+
+    <div formArrayName="steps">
+
+        @for(step of steps.controls; track $index){
+
+            <div class="ingredient-row">
+
+                <textarea
+                    rows="2"
+                    [formControlName]="$index"
+                    placeholder="Step {{$index + 1}}">
+                </textarea>
+
+                <button
+                    type="button"
+                    class="remove-btn"
+                    (click)="removeStep($index)">
+                    ✕
+                </button>
+
+            </div>
+
+        }
+
+    </div>
+
+    <button
+        type="button"
+        class="add-btn"
+        (click)="addStep()">
+
+        + Add Step
+
+    </button>
+
+</div>
+
+        <div class="form-group">
+
+            <label>Notes</label>
+
+            <textarea
+                rows="6"
+                formControlName="notes"
+                [readonly]="!isEditMode">
+            </textarea>
+
+        </div>
+        <div class="form-group">
+
+    <label>Tags</label>
+
+    <div formArrayName="tags">
+
+        @for(tag of tags.controls; track $index){
+
+            <div class="ingredient-row">
+
+                <input
+                    [formControlName]="$index"
+                    placeholder="Dessert">
+
+                <button
+                    type="button"
+                    class="remove-btn"
+                    (click)="removeTag($index)">
+                    ✕
+                </button>
+
+            </div>
+
+        }
+
+    </div>
+
+    <button
+        type="button"
+        class="add-btn"
+        (click)="addTag()">
+
+        + Add Tag
+
+    </button>
+    
+<div class="upload-box">
+
+    <label for="imageUpload">
+
+        📷
+
+        <h3>Add Recipe Photos</h3>
+
+        <p>
+
+            Click here to choose images
+
+        </p>
+
+    </label>
+
+    <input
+        id="imageUpload"
+        type="file"
+        multiple
+        accept="image/*"
+        (change)="onImagesSelected($event)">
+
+</div>
+<div class="image-gallery">
+
+    @for (image of recipe?.images ?? []; track image.id) {
+
+        <div class="image-card">
+
+            <img
+                [src]="'http://localhost:5281/' + image.imagePath"
+                class="recipe-image">
+
+            <div class="image-actions">
+
+                @if (image.isCoverImage) {
+
+                    <span class="cover-badge">
+
+                        ⭐ Cover
+
+                    </span>
+
+                } @else {
+
+                    <button
+                        type="button"
+                        class="cover-btn"
+                        (click)="setCoverImage(image.id)">
+
+                        ☆ Set Cover
+
+                    </button>
+
+                }
+
+                <button
+                    type="button"
+                    class="delete-image-btn"
+                    (click)="deleteImage(image.id)">
+
+                    ✕
+
+                </button>
+
+            </div>
+
+        </div>
+
+    }
+
+</div>
+
+</div>
+
+        <div class="buttons">
+
+            @if (isEditMode) {
+
+                <button type="submit">
+                    {{ isCreateMode ? 'Create Recipe' : 'Save Changes' }}
+                </button>
+
+            } @else {
+
+                <button
+                    type="button"
+                    (click)="enableEdit()">
+                    Edit
+                </button>
+
+                <button
+                    type="button"
+                    class="delete-button"
+                    (click)="deleteRecipe()">
+                    Delete
+                </button>
+
+            }
+
+        </div>
+
+    </form>
+
+
+</div>
+}
+    @else {
+
+<div class="diary-page">
+
+    <h1 class="recipe-title">
+
+        {{ recipe?.title }}
+
+    </h1>
+
+    <div class="recipe-rating">
+
+        ⭐ {{ recipe?.rating }}
+
+    </div>
+
+    <section class="diary-section">
+
+        <h2>Description</h2>
+
+        <p>
+
+            {{ recipe?.summary || "No description yet." }}
+
+        </p>
+
+    </section>
+
+    <section class="diary-section">
+
+        <h2>Ingredients</h2>
+
+        <ul>
+
+            @for (ingredient of recipe?.ingredients ?? []; track ingredient.id) {
+
+            <li>
+
+                @if (ingredient.quantity) {
+
+        <strong>{{ ingredient.quantity }}</strong>
+
+    }
+                {{ ingredient.name }}
+
+            </li>
+
+        }
+
+        </ul>
+
+    </section>
+
+    <section class="diary-section">
+
+        <h2>Steps</h2>
+
+        <ol>
+
+            @for(step of recipe?.steps ?? []; track step.id){
+
+                <li>
+
+                    {{ step.instruction }}
+
+                </li>
+
+            }
+
+        </ol>
+
+    </section>
+
+    <section class="diary-section">
+
+        <h2>Notes</h2>
+
+        <p>
+
+            {{ recipe?.notes || "No notes yet." }}
+
+        </p>
+
+    </section>
+    <section class="diary-section">
+        
+
+    <h2>Tags</h2>
+
+    <div class="tag-container">
+
+        @for(tag of recipe?.tags ?? []; track tag.id){
+
+            <span class="tag-chip">
+
+                {{ tag.name }}
+
+            </span>
+
+        }
+
+    </div>
+
+</section>
+@if ((recipe?.images?.length ?? 0) > 0) {
+
+<section class="diary-section">
+
+    <h2>Recipe Photos</h2>
+
+    <div class="image-gallery">
+
+        @for (image of recipe?.images ?? []; track image.id) {
+
+            <img
+    [src]="'http://localhost:5281/' + image.imagePath"
+    class="recipe-image"
+    (click)="openImage(image.imagePath)">
+
+        }
+
+    </div>
+
+</section>
+
+}
+@if (selectedImage) {
+
+<div
+    class="lightbox"
+    (click)="closeImage()">
+
+    <img
+        [src]="selectedImage"
+        class="lightbox-image"
+        (click)="$event.stopPropagation()">
+
+    <button
+        class="close-button"
+        (click)="closeImage()">
+
+        ✕
+
+    </button>
+
+</div>
+
+}
+
+
+
+    <div class="buttons">
+
+        <button
+            type="button"
+            (click)="enableEdit()">
+
+            Edit
+
+        </button>
+
+        <button
+            type="button"
+            class="delete-button"
+            (click)="deleteRecipe()">
+
+            Delete
+
+        </button>
+
+    </div>
+
+</div>
+
+}
+</main>

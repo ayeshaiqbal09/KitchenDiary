@@ -1,7 +1,68 @@
-<h1>Home Page</h1>
+<main>
 
-<p>Total recipes: {{ recipes.length }}</p>
+    <section class="hero">
 
-<p>First title: {{ recipes[0]?.title }}</p>
+        <h1>Welcome to KitchenDiary</h1>
 
-<pre>{{ recipes | json }}</pre>
+        <p>
+            Every Recipe Tells A Story. Organize your favorite recipes in one beautiful place.
+        </p>
+
+    </section>
+
+    <section class="toolbar">
+
+    <div class="search-container">
+
+        <input
+            type="text"
+            placeholder="Search recipes..."
+        />
+
+        <button
+            routerLink="/recipes/new"
+            class="create-btn">
+
+             Create New Recipe
+
+        </button>
+
+    </div>
+
+</section>
+
+    <section class="recipes">
+
+    <h2>Your Recipes</h2>
+
+    @if(recipes.length === 0){
+
+        <div class="empty-state">
+
+            <h3>No recipes yet 🍳</h3>
+
+            <p>
+                Create your first recipe and start building your personal cookbook.
+            </p>
+
+        </div>
+
+    } @else {
+
+        <div class="recipe-grid">
+
+            @for(recipe of recipes; track recipe.id){
+
+                <app-recipe-card
+                    [recipe]="recipe">
+                </app-recipe-card>
+
+            }
+
+        </div>
+
+    }
+
+</section>
+
+</main>

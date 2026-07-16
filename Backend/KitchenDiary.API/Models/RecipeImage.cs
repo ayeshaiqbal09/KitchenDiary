@@ -9,4 +9,5 @@ public class RecipeImage
     public int RecipeId { get; set; }
 
     public Recipe Recipe { get; set; } = null!;
+    public bool IsCoverImage { get; set; }
 }
