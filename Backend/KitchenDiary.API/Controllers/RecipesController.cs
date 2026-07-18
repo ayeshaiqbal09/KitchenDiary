@@ -218,4 +218,14 @@ public async Task<IActionResult> SetCoverImage(
 
     return NoContent();
 }
+[HttpPut("{recipeId}/cover/remove")]
+public async Task<IActionResult> RemoveCoverImage(int recipeId)
+{
+    var success = await _recipeService.RemoveCoverImageAsync(recipeId);
+
+    if (!success)
+        return NotFound();
+
+    return NoContent();
+}
 }

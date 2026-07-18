@@ -15,10 +15,10 @@
     <div class="search-container">
 
         <input
-            type="text"
-            placeholder="Search recipes..."
-        />
-
+    type="text"
+    placeholder="Search by title, ingredient or tag..."
+    [(ngModel)]="searchTerm"
+    (input)="search()">
         <button
             routerLink="/recipes/new"
             class="create-btn">

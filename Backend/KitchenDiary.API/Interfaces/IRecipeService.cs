@@ -10,4 +10,5 @@ public interface IRecipeService
     Task<RecipeDto?> UpdateRecipeAsync(int id, CreateRecipeDto recipeDto);
     Task<bool> DeleteRecipeAsync(int id);
     Task<IEnumerable<RecipeDto>> SearchRecipesAsync(string searchTerm);
+    Task<bool> RemoveCoverImageAsync(int recipeId);
 }

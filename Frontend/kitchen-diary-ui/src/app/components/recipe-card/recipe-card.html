@@ -2,13 +2,9 @@
 
   <div class="recipe-image">
 
-    @if (getCoverImage()) {
-
-        <img
-            [src]="getCoverImage()"
-            class="cover-image">
-
-    }
+    <img
+    [src]="getCoverImage()"
+    class="cover-image">
 
     <div class="image-overlay">
 
@@ -30,9 +26,21 @@
       {{ recipe.summary }}
     </p>
 
-    <div class="rating">
-      ⭐ {{ recipe.rating }}
-    </div>
+   <div class="rating">
+
+    @for (star of stars; track star) {
+
+        <span
+            class="card-star"
+            [class.filled]="star <= recipe.rating">
+
+            ★
+
+        </span>
+
+    }
+
+</div>
 
   </div>
 

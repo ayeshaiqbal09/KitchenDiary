@@ -112,6 +112,7 @@ var normalizedTag =
 recipe.Summary = recipeDto.Summary;
 recipe.Rating = recipeDto.Rating;
 recipe.Notes = recipeDto.Notes;
+recipe.RecipeStyle = recipeDto.RecipeStyle;
 recipe.Ingredients.Clear();
 
 foreach (var ingredient in recipeDto.Ingredients)
@@ -175,6 +176,8 @@ foreach (var tagName in recipeDto.Tags)
 }
 _logger.LogInformation("RecipeTags Count: {Count}", recipe.RecipeTags.Count);
 
+await _context.SaveChangesAsync();
+
         recipe = await _context.Recipes
     .Include(r => r.Ingredients)
     .Include(r => r.Steps)
@@ -184,6 +187,8 @@ _logger.LogInformation("RecipeTags Count: {Count}", recipe.RecipeTags.Count);
     .FirstAsync(r => r.Id == id);
 _logger.LogInformation("Recipe {RecipeId} updated successfully.",
         recipe.Id);
+
+        
 return recipe.ToRecipeDto();
 
         
@@ -218,15 +223,56 @@ return recipe.ToRecipeDto();
 
         return true;
     }
-    public async Task<IEnumerable<RecipeDto>> SearchRecipesAsync(string searchTerm)
+   public async Task<IEnumerable<RecipeDto>> SearchRecipesAsync(string searchTerm)
+{
+    if (string.IsNullOrWhiteSpace(searchTerm))
+        return await GetAllRecipesAsync();
+
+    searchTerm = searchTerm.Trim().ToLower();
+
+    var recipes = await _context.Recipes
+        .Include(r => r.Ingredients)
+        .Include(r => r.Steps)
+        .Include(r => r.Images)
+        .Include(r => r.RecipeTags)
+            .ThenInclude(rt => rt.Tag)
+        .Where(r =>
+
+            r.Title.ToLower().Contains(searchTerm) ||
+
+            (r.Summary != null &&
+             r.Summary.ToLower().Contains(searchTerm)) ||
+
+             (r.Notes != null &&
+            r.Notes.ToLower().Contains(searchTerm)) ||
+
+            r.Ingredients.Any(i =>
+                i.Name.ToLower().Contains(searchTerm)) ||
+
+            r.RecipeTags.Any(rt =>
+                rt.Tag.Name.ToLower().Contains(searchTerm))
+
+        )
+        .ToListAsync();
+
+    return recipes.Select(r => r.ToRecipeDto());
+}
+    public async Task<bool> RemoveCoverImageAsync(int recipeId)
+{
+    var recipe = await _context.Recipes
+        .Include(r => r.Images)
+        .FirstOrDefaultAsync(r => r.Id == recipeId);
+
+    if (recipe == null)
+        return false;
+
+    foreach (var image in recipe.Images)
     {
-        if (string.IsNullOrWhiteSpace(searchTerm))
-            return await GetAllRecipesAsync();
-
-        var recipes = await _context.Recipes
-                .Where(recipe => recipe.Title.ToLower().Contains(searchTerm.ToLower())).ToListAsync();
-
-        return recipes.Select(r => r.ToRecipeDto());
+        image.IsCoverImage = false;
     }
-    
+
+    await _context.SaveChangesAsync();
+
+    return true;
+}
 }

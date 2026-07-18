@@ -53,6 +53,11 @@ public class ApplicationDbContext : DbContext
         .WithMany(r => r.RecipeTags)
         .HasForeignKey(rt => rt.RecipeId)
         .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<RecipeTag>()
+    .HasOne(rt => rt.Tag)
+    .WithMany(t => t.RecipeTags)
+    .HasForeignKey(rt => rt.TagId);
        
     }
 }

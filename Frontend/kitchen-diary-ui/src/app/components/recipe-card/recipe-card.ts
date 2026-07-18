@@ -12,7 +12,7 @@ export class RecipeCard {
 
   @Input({ required: true })
   recipe!: Recipe;
-
+  stars = [1, 2, 3, 4, 5];
   constructor(private router: Router) {}
 
   viewRecipe(): void {
@@ -20,10 +20,33 @@ export class RecipeCard {
   }
   getCoverImage(): string {
 
-  const cover = this.recipe.images.find(i => i.isCoverImage);
+  const cover =
+    this.recipe.images.find(i => i.isCoverImage);
 
-  return cover
-      ? 'http://localhost:5281/' + cover.imagePath
-      : '';
+  if (cover) {
+
+    return 'http://localhost:5281/' + cover.imagePath;
+
+  }
+
+  
+
+  return this.getStyleImage(this.recipe.recipeStyle);
+
+}
+getStyleImage(style?: string): string {
+
+  if (!style || style.trim() === '') {
+
+    return 'logo/kitchen-diary-logo.webp.png';
+
+  }
+
+  return `recipe-styles/${
+    style
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+  }.webp.png`;
+
 }
 }

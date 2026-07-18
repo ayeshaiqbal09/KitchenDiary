@@ -66,52 +66,100 @@
 
         <div class="form-group">
 
-            <label>Rating</label>
+    <label>Rating</label>
 
-            <input
-                type="number"
-                min="1"
-                max="5"
-                formControlName="rating"
-                [readonly]="!isEditMode">
+    <div class="star-rating">
 
-        </div>
-        <div class="form-group">
+        @for (star of stars; track star) {
 
-    <label>Ingredients</label>
+            <span
+                class="star"
+                [class.filled]="star <= (hoverRating || recipeForm.value.rating)"
+                (mouseenter)="hoverRating = star"
+                (mouseleave)="hoverRating = 0"
+                (click)="recipeForm.patchValue({ rating: star })">
 
-    <div formArrayName="ingredients">
+                ★
 
-        @for (ingredient of ingredients.controls; track $index) {
-
-            <div
-    class="ingredient-row"
-    [formGroupName]="$index">
-
-    <input
-        formControlName="name"
-        type="text"
-        placeholder="Ingredient">
-
-    <input
-        formControlName="quantity"
-        type="text"
-        placeholder="Quantity">
-
-    <button
-        type="button"
-        class="remove-btn"
-        (click)="removeIngredient($index)">
-
-        ✕
-
-    </button>
-
-</div>
+            </span>
 
         }
 
     </div>
+    <div class="form-group">
+
+    <label>Recipe Style</label>
+        <p class="field-hint">
+
+    Used as the recipe's default illustration until you choose a cover photo.
+
+</p>
+
+    <select
+        class="style-select"
+        formControlName="recipeStyle">
+
+        @for (style of styles; track style) {
+
+            <option [value]="style">
+
+                {{ style }}
+
+            </option>
+
+        }
+
+    </select>
+
+</div>
+
+</div>
+        <div class="form-group">
+
+    <label>Ingredients</label>
+
+    @if (ingredients.length === 0) {
+
+        <p class="empty-message">
+            🥕 No ingredients added yet.
+        </p>
+
+    } @else {
+
+        <div formArrayName="ingredients">
+
+            @for (ingredient of ingredients.controls; track $index) {
+
+                <div
+                    class="ingredient-row"
+                    [formGroupName]="$index">
+
+                    <input
+                        formControlName="name"
+                        type="text"
+                        placeholder="Ingredient">
+
+                    <input
+                        formControlName="quantity"
+                        type="text"
+                        placeholder="Quantity">
+
+                    <button
+                        type="button"
+                        class="remove-btn"
+                        (click)="removeIngredient($index)">
+
+                        ✕
+
+                    </button>
+
+                </div>
+
+            }
+
+        </div>
+
+    }
 
     <button
         type="button"
@@ -127,30 +175,42 @@
 
     <label>Steps</label>
 
-    <div formArrayName="steps">
+    @if (steps.length === 0) {
 
-        @for(step of steps.controls; track $index){
+        <p class="empty-message">
+            📝 No steps added yet.
+        </p>
 
-            <div class="ingredient-row">
+    } @else {
 
-                <textarea
-                    rows="2"
-                    [formControlName]="$index"
-                    placeholder="Step {{$index + 1}}">
-                </textarea>
+        <div formArrayName="steps">
 
-                <button
-                    type="button"
-                    class="remove-btn"
-                    (click)="removeStep($index)">
-                    ✕
-                </button>
+            @for (step of steps.controls; track $index) {
 
-            </div>
+                <div class="ingredient-row">
 
-        }
+                    <textarea
+                        rows="2"
+                        [formControlName]="$index"
+                        placeholder="Step {{$index + 1}}">
+                    </textarea>
 
-    </div>
+                    <button
+                        type="button"
+                        class="remove-btn"
+                        (click)="removeStep($index)">
+
+                        ✕
+
+                    </button>
+
+                </div>
+
+            }
+
+        </div>
+
+    }
 
     <button
         type="button"
@@ -162,7 +222,6 @@
     </button>
 
 </div>
-
         <div class="form-group">
 
             <label>Notes</label>
@@ -236,49 +295,53 @@
 </div>
 <div class="image-gallery">
 
-    @for (image of recipe?.images ?? []; track image.id) {
+    @for(image of recipe?.images ?? []; track image.id){
 
-        <div class="image-card">
+         <div class="image-card">
 
-            <img
-                [src]="'http://localhost:5281/' + image.imagePath"
-                class="recipe-image">
+    <img
+        [src]="'http://localhost:5281/' + image.imagePath"
+        class="recipe-image">
 
-            <div class="image-actions">
+    <div class="image-actions">
 
-                @if (image.isCoverImage) {
+        @if(image.isCoverImage){
 
-                    <span class="cover-badge">
+            <button
+        class="cover-btn active"
+        (click)="removeCoverImage()">
 
-                        ⭐ Cover
+        Remove Cover
 
-                    </span>
+    </button>
 
-                } @else {
+        }
+        @else{
 
-                    <button
-                        type="button"
-                        class="cover-btn"
-                        (click)="setCoverImage(image.id)">
+            <button
+                type="button"
+                class="cover-btn"
+                (click)="setCoverImage(image.id)">
 
-                        ☆ Set Cover
+                Set as Cover
 
-                    </button>
+            </button>
 
-                }
+        }
 
-                <button
-                    type="button"
-                    class="delete-image-btn"
-                    (click)="deleteImage(image.id)">
+        <button
+            type="button"
+            class="delete-image-btn"
+            (click)="deleteImage(image.id)">
 
-                    ✕
+            ✕
 
-                </button>
+        </button>
 
-            </div>
+    </div>
+</div>
 
-        </div>
+
 
     }
 
@@ -319,6 +382,13 @@
 </div>
 }
     @else {
+       
+
+<div
+    class="theme-page"
+    [style.background-image]="'url(' + getThemeImage() + ')'">
+
+
 
 <div class="diary-page">
 
@@ -330,9 +400,19 @@
 
     <div class="recipe-rating">
 
-        ⭐ {{ recipe?.rating }}
+    @for(star of stars; track star){
 
-    </div>
+        <span
+            class="view-star"
+            [class.filled]="star <= (recipe?.rating ?? 0)">
+
+            ★
+
+        </span>
+
+    }
+
+</div>
 
     <section class="diary-section">
 
@@ -491,6 +571,8 @@
     </div>
 
 </div>
+</div>
 
-}
+    }
+
 </main>

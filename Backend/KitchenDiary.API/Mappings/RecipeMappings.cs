@@ -15,6 +15,7 @@ public static class RecipeMappings
         Rating = recipe.Rating,
         Notes = recipe.Notes,
         DateAdded = recipe.DateAdded,
+        RecipeStyle = recipe.RecipeStyle,
 
         Ingredients = recipe.Ingredients
         .Select(i => i.ToIngredientDto())
@@ -42,7 +43,7 @@ public static class RecipeMappings
         Rating = dto.Rating,
         Notes = dto.Notes,
         DateAdded = DateTime.UtcNow,
-
+        RecipeStyle = dto.RecipeStyle,
        Ingredients = dto.Ingredients
     .Select(i => new Ingredient
     {

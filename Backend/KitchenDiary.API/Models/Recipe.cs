@@ -20,5 +20,10 @@ public class Recipe
 
     public ICollection<RecipeImage> Images { get; set; } = [];
 
-    public ICollection<RecipeTag> RecipeTags { get; set; } = [];
+    public ICollection<RecipeTag> RecipeTags { get; set; } = new List<RecipeTag>();
+    public string RecipeStyle { get; set; } = "";
+
+    public string UserId { get; set; } = string.Empty;
+
+    public ApplicationUser User { get; set; } = null!;
 }

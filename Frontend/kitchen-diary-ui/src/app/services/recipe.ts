@@ -57,4 +57,19 @@ setCoverImage(recipeId: number, imageId: number) {
   );
 
 }
+searchRecipes(searchTerm: string) {
+
+  return this.http.get<Recipe[]>(
+    `${this.apiUrl}/search?searchTerm=${searchTerm}`
+  );
+
+}
+removeCoverImage(recipeId: number) {
+
+  return this.http.put(
+    `${this.apiUrl}/${recipeId}/cover/remove`,
+    {}
+  );
+
+}
 }

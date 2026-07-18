@@ -22,4 +22,5 @@ public class CreateRecipeDto
     public List<string> Steps { get; set; } = [];
 
     public List<string> Tags { get; set; } = [];
+    public string RecipeStyle { get; set; } = "";
 }

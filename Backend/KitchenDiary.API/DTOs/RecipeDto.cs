@@ -19,4 +19,5 @@ public class RecipeDto
     public List<RecipeImageDto> Images { get; set; } = [];
 
     public List<TagDto> Tags { get; set; } = [];
+    public string RecipeStyle { get; set; } = "General";
 }

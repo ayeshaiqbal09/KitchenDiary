@@ -20,6 +20,49 @@ export class RecipeEditor implements OnInit {
   isEditMode = false;
    selectedImage: string | null = null;
   recipeForm!: ReturnType<FormBuilder['group']>;
+  styles = [
+
+'Cake',
+
+'Pizza',
+
+'Italian',
+
+'Chinese',
+
+'Asian',
+
+'Curry',
+
+'Drinks',
+
+'Cupcakes',
+
+'Roasts',
+
+'Mughlai',
+
+'Indian',
+
+'Thai',
+
+'South Indian',
+
+'North Indian',
+
+'Biryani',
+
+'Fast Food',
+
+'Snacks',
+
+'Seafood',
+
+'Desserts'
+
+];
+  stars = [1, 2, 3, 4, 5];
+  hoverRating = 0;
   constructor(
   private route: ActivatedRoute,
   private recipeService: RecipeService,
@@ -35,12 +78,14 @@ export class RecipeEditor implements OnInit {
 
   rating:  [5],
   
-
+    
   notes: [''],
   ingredients: this.fb.array([]),
   steps: this.fb.array([]),
 
-  tags: this.fb.array([])
+  tags: this.fb.array([]),
+
+  recipeStyle:['Cake']
 
 });
 
@@ -112,8 +157,7 @@ removeTag(index:number): void {
 
     this.isCreateMode = true;
     this.isEditMode = true;
-    this.addIngredient();
-    this.addStep();
+    
     return;
   }
 
@@ -128,7 +172,8 @@ removeTag(index:number): void {
       title: recipe.title,
       summary: recipe.summary,
       rating: recipe.rating,
-      notes: recipe.notes
+      notes: recipe.notes,
+      recipeStyle: recipe.recipeStyle
 
     });
     this.ingredients.clear();
@@ -194,6 +239,7 @@ onSubmit(): void {
   const recipe = this.buildRecipe();
 console.log("Recipe being sent:", recipe);
   if (this.isCreateMode) {
+    
     this.createRecipe(recipe);
   } else {
     this.updateRecipe(recipe);
@@ -208,6 +254,7 @@ private buildRecipe(): Recipe {
     summary: this.recipeForm.value.summary!,
     rating: this.recipeForm.value.rating!,
     notes: this.recipeForm.value.notes ?? '',
+    recipeStyle: this.recipeForm.value.recipeStyle!,
     dateAdded: this.recipe?.dateAdded ?? '',
     ingredients: this.ingredients.value.map((i: any) => ({
     name: i.name,
@@ -215,7 +262,8 @@ private buildRecipe(): Recipe {
 })),
     steps: this.steps.value,
     images: this.recipe?.images ?? [],
-    tags: this.tags.value
+    tags: this.tags.value,
+    
     
   };
 
@@ -402,5 +450,29 @@ setCoverImage(imageId: number): void {
       });
 
 }
+removeCoverImage() {
 
+  this.recipeService
+      .removeCoverImage(this.recipe!.id)
+      .subscribe(() => {
+
+        this.recipe!.images.forEach(i => {
+
+          i.isCoverImage = false;
+
+        });
+
+      });
+
+}
+getThemeImage(): string {
+
+   
+
+        return 'page-themes/default.png';
+
+    
+
+   
+}
 }

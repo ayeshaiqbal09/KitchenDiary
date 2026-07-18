@@ -64,6 +64,8 @@ export interface Recipe {
   images: RecipeImage[];
 
   tags: Tag[];
+  
+  recipeStyle: string;
 
 }
 export interface RecipeImage {
