@@ -47,6 +47,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.ConfigureKestrel(options =>
+{
+    var port = Environment.GetEnvironmentVariable("PORT");
+
+    if (!string.IsNullOrEmpty(port))
+    {
+        options.ListenAnyIP(int.Parse(port));
+    }
+});
 builder.Services
     .AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
