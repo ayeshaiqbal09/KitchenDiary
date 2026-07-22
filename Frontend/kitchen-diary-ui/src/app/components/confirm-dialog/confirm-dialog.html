@@ -1,0 +1,40 @@
+
+@if (dialog) {
+
+<div class="overlay">
+
+    <div class="dialog">
+
+        <h2>{{ dialog.title }}</h2>
+
+        <p>{{ dialog.message }}</p>
+
+        <p class="warning">
+            This action cannot be undone.
+        </p>
+
+        <div class="buttons">
+
+            <button
+                class="cancel-btn"
+                (click)="cancel()">
+
+                {{ dialog.cancelText }}
+
+            </button>
+
+            <button
+                class="delete-btn"
+                (click)="confirm()">
+
+                {{ dialog.confirmText }}
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}

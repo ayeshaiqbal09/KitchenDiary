@@ -1,8 +1,13 @@
 main{
 
-    max-width:900px;
-    margin:40px auto;
+     max-width:900px;
+    width:100%;
+
+    margin:20px auto;
+
     padding:20px;
+
+    box-sizing:border-box;
 
 }
 
@@ -10,7 +15,7 @@ main{
 
     display:inline-block;
 
-    margin-bottom:30px;
+    margin-bottom:20px;
 
     text-decoration:none;
 
@@ -22,7 +27,7 @@ main{
 
 .editor-header{
 
-    margin-bottom:40px;
+    margin-bottom:24px;
 
 }
 
@@ -53,6 +58,15 @@ main{
     padding:40px;
 
     box-shadow:var(--shadow);
+
+}
+@media (max-width:768px){
+
+    .editor-card{
+
+        padding:24px;
+
+    }
 
 }
 .form-group{
@@ -117,6 +131,28 @@ textarea:focus{
     margin-bottom:12px;
 
 }
+@media(max-width:600px){
+
+    .ingredient-row{
+
+        display:grid;
+
+        grid-template-columns: 2fr 1fr auto;
+
+        gap:10px;
+
+        align-items:center;
+
+    }
+    .remove-btn{
+
+        width:100%;
+
+        height:46px;
+
+    }
+
+}
 
 .ingredient-row input{
 
@@ -153,6 +189,9 @@ textarea:focus{
 .remove-btn{
 
     width:42px;
+    height:42px;
+
+    flex-shrink:0;
 
     border:none;
 
@@ -173,21 +212,7 @@ textarea:focus{
     background:#C0392B;
 
 }
-.diary-page {
 
-    position: relative;
-
-    background: #FFFDF6;
-
-    border-radius: 24px;
-
-    padding: 60px;
-
-    box-shadow: 0 20px 50px rgba(0,0,0,.08);
-
-    overflow: hidden;
-
-}
 .diary-page::before {
 
     content: "";
@@ -241,7 +266,7 @@ textarea:focus{
 
     text-align:center;
 
-    font-size:3.2rem;
+    font-size:clamp(2rem,5vw,3.2rem);
 
     color:var(--primary-color);
 
@@ -315,16 +340,22 @@ textarea:focus{
 }
 .image-gallery{
 
-    display:flex;
-    flex-wrap:wrap;
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(180px,1fr));
+
     gap:16px;
+
     margin-top:16px;
 
 }
 
 .recipe-image{
 
-    width:180px;
+    width:100%;
+
+    aspect-ratio:1;
     height:180px;
 
     object-fit:cover;
@@ -400,6 +431,15 @@ textarea:focus{
     cursor:pointer;
 
     transition:.25s;
+
+}
+@media(max-width:768px){
+
+    .upload-box{
+
+        padding:20px;
+
+    }
 
 }
 
@@ -496,6 +536,15 @@ textarea:focus{
     margin-top:32px;
 
     flex-wrap:wrap;
+
+}
+@media(max-width:600px){
+
+    .buttons button{
+
+        width:100%;
+
+    }
 
 }
 .buttons button{
@@ -662,7 +711,7 @@ button[type="submit"]:hover{
 
 .star{
 
-    font-size:2.2rem;
+    font-size:clamp(1.6rem,5vw,2.2rem);
 
     color:#d5d5d5;
 
@@ -777,22 +826,35 @@ button[type="submit"]:hover{
     display:flex;
 
     justify-content:center;
+    
 
 }
 .diary-page{
 
     position:absolute;
 
-    width:760px;
+    width:min(760px,100%);
 
-    top:120px;
+    top:40px;
+     position: relative;
+
+    background: #FFFDF6;
+
+    border-radius: 24px;
+
+    padding: 60px;
+
+    box-shadow: 0 20px 50px rgba(0,0,0,.08);
+
+    overflow: hidden;
 
 }
 .theme-frame{
 
-    width:900px;
+    width:100%;
 
-    max-width:100%;
+    max-width:900px;
+
 
     display:block;
 }

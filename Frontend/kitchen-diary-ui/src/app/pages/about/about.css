@@ -1,0 +1,113 @@
+.about-container{
+
+    max-width:1000px;
+
+    margin:auto;
+
+    padding:60px 20px;
+
+}
+
+.hero {
+
+    text-align: center;
+    margin-bottom: 60px;
+
+}
+.hero h1{
+
+    font-size:clamp(2rem,5vw,3.5rem);
+
+    color:var(--primary-color);
+
+}
+.hero p{
+
+    font-size:18px;
+
+    color:#555;
+
+    max-width:700px;
+
+    margin:20px auto;
+
+    line-height:1.8;
+
+}
+
+.features {
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 25px;
+    margin-bottom: 60px;
+
+}
+
+.feature-card {
+
+    background: white;
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+      text-align:center;
+    transition: .3s;
+
+}
+
+.feature-card:hover {
+
+    transform: translateY(-5px);
+
+}
+
+.feature-card h3 {
+
+    color: #73966f;
+    margin-bottom: 12px;
+
+}
+
+.tech-stack{
+
+    
+    margin-top:60px;
+
+    text-align:center;
+
+}
+
+.tech-stack h2 {
+
+    margin-bottom:20px;
+
+    color:var(--text-color);
+
+    font-size:2rem;
+
+}
+
+.tech-badges {
+
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top:20px;
+
+}
+
+.tech-badges span {
+
+    padding:8px 16px;
+
+    border-radius:20px;
+
+    border:2px solid #73966f;
+
+    background:white;
+
+    color:#73966f;
+
+    font-weight:600;
+}

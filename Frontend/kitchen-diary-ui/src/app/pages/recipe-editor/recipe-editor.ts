@@ -5,6 +5,8 @@ import { Recipe } from '../../models/recipe';
 import { FormBuilder, ReactiveFormsModule, Validators, FormArray} from '@angular/forms';
 import { Router } from '@angular/router';
 import { RouterLink } from '@angular/router';
+import { ToastService } from '../../services/toast.service';
+import { ConfirmDialogService } from '../../services/confirm-dialog.service';
 
 
 @Component({
@@ -67,8 +69,10 @@ export class RecipeEditor implements OnInit {
   private route: ActivatedRoute,
   private recipeService: RecipeService,
   private fb: FormBuilder,
-  private router: Router
-  
+  private router: Router,
+   private toastService: ToastService,
+   private confirmDialogService: ConfirmDialogService
+
 ) {
   this.recipeForm = this.fb.group({
 
@@ -213,7 +217,13 @@ recipe.tags.forEach(tag => {
 });
     this.isEditMode = false;
     },
-    error: (err) => console.error(err)
+    error: (err) => {
+
+  console.error(err);
+
+  this.toastService.error('Something went wrong. Please try again.');
+
+}
   });
 
   
@@ -276,13 +286,13 @@ private updateRecipe(recipe: Recipe): void {
 
       this.recipe = updatedRecipe;
       this.isEditMode = false;
-
+      this.toastService.success('Recipe updated successfully!');
       
 
     },
 
     error: (err) => {
-
+      this.toastService.error('Something went wrong. Please try again.');
   console.log(err.error);
 
   console.log(JSON.stringify(err.error.errors, null, 2));
@@ -297,13 +307,14 @@ private createRecipe(recipe: Recipe): void {
 
     next: (createdRecipe) => {
 
+      this.toastService.success('Recipe created successfully!');
       
-
       this.router.navigate(['/recipes', createdRecipe.id]);
 
     },
 
     error: (err) => {
+      this.toastService.error('Something went wrong. Please try again.');
   console.error('Create failed');
   console.error(err);
 }
@@ -311,31 +322,45 @@ private createRecipe(recipe: Recipe): void {
   });
 
 }
-deleteRecipe(): void {
+async deleteRecipe(): Promise<void> {
 
   if (!this.recipe) {
     return;
   }
 
-  const confirmed = confirm(
-    `Delete "${this.recipe.title}"?`
-  );
+  const confirmed = await this.confirmDialogService.open({
 
-  if (!confirmed) {
-    return;
-  }
+  title: 'Delete Recipe',
+
+  message: `Are you sure you want to delete "${this.recipe.title}"?`,
+
+  confirmText: 'Delete',
+
+  cancelText: 'Cancel'
+
+});
+
+if (!confirmed) {
+  return;
+}
 
   this.recipeService.deleteRecipe(this.recipe.id).subscribe({
 
     next: () => {
 
-      
+      this.toastService.success('Recipe deleted successfully!');
 
       this.router.navigate(['/']);
 
     },
 
-    error: err => console.error(err)
+    error: (err) => {
+
+  console.error(err);
+
+  this.toastService.error('Something went wrong. Please try again.');
+
+}
 
   });
   
@@ -376,7 +401,13 @@ const recipeId = this.recipe.id;
 
 },
 
-        error: (err) => console.error(err)
+        error: (err) => {
+
+  console.error(err);
+
+  this.toastService.error('Something went wrong. Please try again.');
+
+}
 
       });
 
@@ -402,7 +433,13 @@ deleteImage(imageId: number): void {
 
 },
 
-          error: err => console.error(err)
+          error: (err) => {
+
+  console.error(err);
+
+  this.toastService.error('Something went wrong. Please try again.');
+
+}
 
       });
 
@@ -445,7 +482,13 @@ setCoverImage(imageId: number): void {
 
         },
 
-        error: err => console.error(err)
+        error: (err) => {
+
+  console.error(err);
+
+  this.toastService.error('Something went wrong. Please try again.');
+
+}
 
       });
 

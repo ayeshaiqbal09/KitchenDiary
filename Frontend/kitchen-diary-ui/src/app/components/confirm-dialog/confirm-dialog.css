@@ -1,0 +1,167 @@
+.overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0,0,0,.45);
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    z-index: 9998;
+
+    animation: fadeIn .2s ease;
+
+}
+
+.dialog {
+
+    width: 420px;
+
+    max-width: 90%;
+
+    background: #fffdfb;
+
+    border-radius: 16px;
+
+    padding: 24px;
+
+    box-shadow: 0 12px 30px rgba(0,0,0,.2);
+
+}
+
+.dialog h2 {
+
+    margin-top: 0;
+
+}
+
+.warning {
+
+    color: #666;
+
+    font-size: 14px;
+
+    margin-top: 12px;
+
+}
+
+.buttons {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 12px;
+
+    margin-top: 24px;
+
+}
+button {
+
+    font-size: 15px;
+
+    font-weight: 500;
+
+    transition: all .2s ease;
+}
+.cancel-btn {
+
+    padding: 10px 18px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    background: #e5e7eb;
+
+}
+
+.delete-btn {
+
+    padding: 10px 18px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    color: white;
+
+    background: #d32f2f;
+
+}
+
+.cancel-btn:hover {
+
+    background: #d1d5db;
+
+}
+
+.delete-btn:hover {
+
+    background: #b71c1c;
+
+}
+button:hover {
+
+    transform: translateY(-1px);
+}
+.dialog {
+
+    animation: popup .22s ease;
+}
+.dialog h2 {
+    margin: 0 0 12px;
+    font-size: 28px;
+    font-weight: 600;
+    color: #2f3a32;
+    letter-spacing: -0.5px;
+}
+.dialog p {
+
+    color: #5f6368;
+
+    font-size: 17px;
+
+    line-height: 1.6;
+
+    margin: 0;
+}
+.warning {
+
+    margin-top: 16px;
+
+    color: #9a6b42;
+
+    font-size: 14px;
+
+    font-style: italic;
+}
+
+@keyframes popup {
+
+    from {
+
+        opacity: 0;
+
+        transform: scale(.94);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: scale(1);
+
+    }
+
+}

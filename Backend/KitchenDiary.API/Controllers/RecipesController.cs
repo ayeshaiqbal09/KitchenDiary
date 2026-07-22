@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using KitchenDiary.API.DTOs;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using KitchenDiary.API.Models;
+using Microsoft.AspNetCore.Authorization;
 namespace KitchenDiary.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class RecipesController : ControllerBase
 {
     private readonly IRecipeService _recipeService;

@@ -1,0 +1,24 @@
+@if (toast) {
+<div
+  class="toast"
+  [ngClass]="[toast.type, toast.visible ? '' : 'hidden']">
+
+  <span class="icon">
+    @switch (toast.type) {
+      @case ('success') { ✔ }
+      @case ('error') { ✖ }
+      @case ('warning') { ⚠ }
+      @case ('info') { ℹ }
+    }
+  </span>
+
+  <span class="message">
+    {{ toast.message }}
+  </span>
+
+  <button class="close-btn" (click)="close()">
+    ✕
+  </button>
+
+</div>
+}

@@ -6,15 +6,55 @@
             KitchenDiary
         </h2>
 
-        <ul>
+        <button
+            class="menu-btn"
+            (click)="toggleMenu()">
 
-            <li><a routerLink="/">Home</a></li>
+            {{ menuOpen ? '✕' : '☰' }}
 
-            <li><a href="#">About</a></li>
+        </button>
 
-            <li><a href="#">Contact Us</a></li>
+        <div class="nav-menu" [class.open]="menuOpen">
 
-        </ul>
+            <ul class="nav-links">
+
+                <li><a routerLink="/" (click)="menuOpen = false">Home</a></li>
+                <li><a routerLink="/about" (click)="menuOpen = false">About</a></li>
+                <li><a routerLink="/contact" (click)="menuOpen = false">Contact</a></li>
+
+            </ul>
+
+            <div class="auth-section">
+
+                @if (!isLoggedIn()) {
+
+                    <a class="login-btn" routerLink="/login" (click)="menuOpen = false">Login</a>
+
+                    <a class="register-btn" routerLink="/register" (click)="menuOpen = false">Register</a>
+
+                } @else {
+
+                    <span class="welcome-text">
+                        Welcome, {{ getFullName() }}
+                    </span>
+
+                    <span class="divider">|</span>
+
+                    <a class="add-btn" routerLink="/recipes/new" (click)="menuOpen = false">
+                        + Add Recipe
+                    </a>
+
+                    <span class="divider">|</span>
+
+                    <button class="logout-btn" (click)="logout()">
+                        Logout
+                    </button>
+
+                }
+
+            </div>
+
+        </div>
 
     </nav>
 

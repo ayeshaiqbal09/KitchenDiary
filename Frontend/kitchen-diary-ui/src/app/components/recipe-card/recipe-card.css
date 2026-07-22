@@ -16,7 +16,7 @@
 
     position:relative;
 
-    height:220px;
+    height: clamp(180px, 25vw, 220px);
 
     overflow:hidden;
 
@@ -62,7 +62,7 @@
 }
 
 .recipe-content h3{
-    font-size:1.3rem;
+    font-size:clamp(1.1rem,2vw,1.3rem);
     margin-bottom:12px;
     color:var(--text-color);
 }
@@ -137,5 +137,51 @@
 .recipe-card:hover .cover-image{
 
     transform:scale(1.05);
+
+}
+@media (hover:hover){
+
+    .recipe-card:hover{
+
+        transform:translateY(-6px);
+
+        box-shadow:0 10px 24px rgba(0,0,0,.15);
+
+    }
+
+    .recipe-card:hover .image-overlay{
+
+        opacity:1;
+
+    }
+
+    .recipe-card:hover .view-btn{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+    .recipe-card:hover .cover-image{
+
+        transform:scale(1.05);
+
+    }
+
+}
+@media (max-width:768px){
+
+    .recipe-content{
+
+        padding:16px;
+
+    }
+
+    .card-star{
+
+        font-size:1.2rem;
+
+    }
 
 }

@@ -1,3 +1,4 @@
+
 namespace KitchenDiary.API.Models;
 
 public class Recipe

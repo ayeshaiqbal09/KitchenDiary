@@ -1,0 +1,6 @@
+export interface AuthResponse {
+  token: string;
+  fullName: string;
+  email: string;
+  expiresAt: string;
+}

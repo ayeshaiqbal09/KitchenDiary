@@ -6,22 +6,36 @@ using KitchenDiary.API.Models;
 using Microsoft.EntityFrameworkCore;
 namespace KitchenDiary.API.Services;
 
+
 public class RecipeService : IRecipeService
 {
     private readonly ApplicationDbContext _context;
     private readonly ILogger<RecipeService> _logger;
     private readonly IWebHostEnvironment _environment;
+    private readonly ICurrentUserService _currentUserService;
 
-    public RecipeService(ApplicationDbContext context, ILogger<RecipeService> logger, IWebHostEnvironment environment)
+    public RecipeService(ApplicationDbContext context, ILogger<RecipeService> logger, 
+    IWebHostEnvironment environment, ICurrentUserService currentUserService)
     {
         _context = context;
         _logger = logger;
         _environment=environment;
+        _currentUserService = currentUserService;
     }
 
     public async Task<RecipeDto> CreateRecipeAsync(CreateRecipeDto recipeDto)
     {
+        
         var recipe = recipeDto.ToRecipe();
+
+        var userId = _currentUserService.UserId;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            throw new UnauthorizedAccessException("User is not authenticated.");
+        }
+
+        recipe.UserId = userId;
         
         _context.Recipes.Add(recipe);
         var existingTags = await _context.Tags.ToListAsync();
@@ -65,7 +79,9 @@ var normalizedTag =
     }
     public async Task<IEnumerable<RecipeDto>> GetAllRecipesAsync()
     {
+        var userId = _currentUserService.UserId;
         var recipes = await _context.Recipes
+        .Where(r => r.UserId == userId)
         .Include(r => r.Ingredients)
         .Include(r => r.Steps)
         .Include(r => r.Images)
@@ -77,13 +93,15 @@ var normalizedTag =
     }
     public async Task<RecipeDto?> GetRecipeByIdAsync(int id)
     {
+        var userId = _currentUserService.UserId;
+
         var recipe = await _context.Recipes
         .Include(r => r.Ingredients)
         .Include(r => r.Steps)
         .Include(r => r.Images)
         .Include(r => r.RecipeTags)
             .ThenInclude(rt => rt.Tag)
-        .FirstOrDefaultAsync(r => r.Id == id);
+        .FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
 
         if (recipe == null)
         {
@@ -96,12 +114,13 @@ var normalizedTag =
     }
     public async Task<RecipeDto?> UpdateRecipeAsync(int id, CreateRecipeDto recipeDto)
     {
+        var userId = _currentUserService.UserId;
         var recipe = await _context.Recipes
     .Include(r => r.Ingredients)
     .Include(r => r.Steps)
     .Include(r => r.RecipeTags)
         .ThenInclude(rt => rt.Tag)
-    .FirstOrDefaultAsync(r => r.Id == id);
+    .FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
 
         if (recipe == null)
         {
@@ -175,7 +194,8 @@ foreach (var tagName in recipeDto.Tags)
     });
 }
 _logger.LogInformation("RecipeTags Count: {Count}", recipe.RecipeTags.Count);
-
+_logger.LogInformation("UserId: {UserId}", recipe.UserId);
+_logger.LogInformation("Recipe Title: {Title}", recipe.Title);
 await _context.SaveChangesAsync();
 
         recipe = await _context.Recipes
@@ -197,9 +217,9 @@ return recipe.ToRecipeDto();
     }
     public async Task<bool> DeleteRecipeAsync(int id)
     {
-        var recipe = await _context.Recipes.Include(r => r.Images).FirstOrDefaultAsync(r => r.Id == id);
-        
-        
+        var userId = _currentUserService.UserId;
+        var recipe = await _context.Recipes.Include(r => r.Images).FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
+
         if (recipe == null)
         {
             _logger.LogWarning("Recipe {RecipeId} not found.", id);
@@ -225,6 +245,7 @@ return recipe.ToRecipeDto();
     }
    public async Task<IEnumerable<RecipeDto>> SearchRecipesAsync(string searchTerm)
 {
+    var userId = _currentUserService.UserId;
     if (string.IsNullOrWhiteSpace(searchTerm))
         return await GetAllRecipesAsync();
 
@@ -238,7 +259,7 @@ return recipe.ToRecipeDto();
             .ThenInclude(rt => rt.Tag)
         .Where(r =>
 
-            r.Title.ToLower().Contains(searchTerm) ||
+           ( r.Title.ToLower().Contains(searchTerm) ||
 
             (r.Summary != null &&
              r.Summary.ToLower().Contains(searchTerm)) ||
@@ -250,7 +271,7 @@ return recipe.ToRecipeDto();
                 i.Name.ToLower().Contains(searchTerm)) ||
 
             r.RecipeTags.Any(rt =>
-                rt.Tag.Name.ToLower().Contains(searchTerm))
+                rt.Tag.Name.ToLower().Contains(searchTerm))) && r.UserId == userId
 
         )
         .ToListAsync();
@@ -259,9 +280,10 @@ return recipe.ToRecipeDto();
 }
     public async Task<bool> RemoveCoverImageAsync(int recipeId)
 {
+    var userId = _currentUserService.UserId;
     var recipe = await _context.Recipes
         .Include(r => r.Images)
-        .FirstOrDefaultAsync(r => r.Id == recipeId);
+        .FirstOrDefaultAsync(r => r.Id == recipeId && r.UserId == _currentUserService.UserId);
 
     if (recipe == null)
         return false;
