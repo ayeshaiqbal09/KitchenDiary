@@ -44,7 +44,7 @@ builder.Services.AddSwaggerGen();
 // });
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlite(
+    options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services
