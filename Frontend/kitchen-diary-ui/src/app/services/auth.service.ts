@@ -5,13 +5,14 @@ import { tap } from 'rxjs/operators';
 import { LoginRequest } from '../models/login';
 import { RegisterRequest } from '../models/register';
 import { AuthResponse } from '../models/auth-response';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private apiUrl = 'http://localhost:5281/api/auth';
+  private apiUrl = `${environment.apiUrl}/auth`;
 
   constructor(private http: HttpClient) { }
 
