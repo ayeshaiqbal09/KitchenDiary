@@ -5,11 +5,12 @@ import { ToastComponent } from './components/toast/toast';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog';
 import { Loading } from './services/loading';
 import { LoadingSpinner } from './shared/loading-spinner/loading-spinner';
+import { Footer } from './shared/footer/footer';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Navbar, ToastComponent, ConfirmDialogComponent, LoadingSpinner, AsyncPipe],
+  imports: [RouterOutlet, Navbar, ToastComponent, ConfirmDialogComponent, LoadingSpinner, Footer, AsyncPipe],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
