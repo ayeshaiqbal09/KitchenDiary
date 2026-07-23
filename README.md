@@ -42,7 +42,7 @@ https://github.com/ayeshaiqbal09/KitchenDiary
 
 ### Home Page
 
-
+![Recipe Details](screenshots/home.png)
 
 ---
 
@@ -50,10 +50,11 @@ https://github.com/ayeshaiqbal09/KitchenDiary
 
 ![Recipe Details](screenshots/details.png)
 
+---
+
 ### Register Page
 
-![Register Page].(screenshots/register.png)
-
+![Recipe Details](screenshots/register.png)
 ---
 
 ### Login
