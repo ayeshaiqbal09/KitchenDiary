@@ -10,7 +10,11 @@ using Microsoft.IdentityModel.Tokens;
 //using Microsoft.OpenApi;
 using System.Text;
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.Sources.Clear();
 
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+    .AddEnvironmentVariables();
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddEndpointsApiExplorer();
