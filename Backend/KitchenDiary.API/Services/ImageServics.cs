@@ -11,11 +11,13 @@ public class ImageService : IImageService
     private readonly ApplicationDbContext _context;
     private readonly IWebHostEnvironment _environment;
     private readonly ILogger<RecipeService> _logger;
-    public ImageService(ApplicationDbContext context, IWebHostEnvironment environment, ILogger<RecipeService> logger)
+    private readonly CloudinaryService _cloudinaryService;
+    public ImageService(ApplicationDbContext context, IWebHostEnvironment environment, ILogger<RecipeService> logger, CloudinaryService cloudinaryService)
     {
         _context = context;
         _logger = logger;
         _environment=environment;
+        _cloudinaryService = cloudinaryService;
     }
     public async Task<RecipeImageDto?> AddRecipeImageAsync(int recipeId,
     CreateRecipeImageDto imageDto)
@@ -52,23 +54,24 @@ public class ImageService : IImageService
 
         return null;
     }
-    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageDto.Image.FileName);
+    // var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageDto.Image.FileName);
 
-    var webRoot = _environment.WebRootPath;
+    // var webRoot = _environment.WebRootPath;
     
-    var uploadsFolder = Path.Combine(webRoot, "uploads", "recipes");
+    // var uploadsFolder = Path.Combine(webRoot, "uploads", "recipes");
     
-    Directory.CreateDirectory(uploadsFolder);
+    // Directory.CreateDirectory(uploadsFolder);
     
-    var filePath = Path.Combine( uploadsFolder, fileName);
+    // var filePath = Path.Combine( uploadsFolder, fileName);
     
-    using var stream = new FileStream(filePath, FileMode.Create);
+    // using var stream = new FileStream(filePath, FileMode.Create);
 
-    await imageDto.Image.CopyToAsync(stream);
+    // await imageDto.Image.CopyToAsync(stream);
+    var imageUrl = await _cloudinaryService.UploadImageAsync(imageDto.Image);
 
     var recipeImage = new RecipeImage
     {
-        ImagePath = "uploads/recipes/" + fileName,
+         ImagePath = imageUrl,
 
         RecipeId = recipeId
     };
@@ -91,14 +94,14 @@ public async Task<bool> DeleteRecipeImageAsync(int imageId)
     if (image == null)
         return false;
 
-    var filePath = Path.Combine(
-        _environment.ContentRootPath,
-        image.ImagePath);
+    // var filePath = Path.Combine(
+    //     _environment.ContentRootPath,
+    //     image.ImagePath);
 
-    if (File.Exists(filePath))
-    {
-        File.Delete(filePath);
-    }
+    // if (File.Exists(filePath))
+    // {
+    //     File.Delete(filePath);
+    // }
 
     _context.RecipeImages.Remove(image);
 

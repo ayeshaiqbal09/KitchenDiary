@@ -25,7 +25,7 @@ export class RecipeCard {
 
   if (cover) {
 
-    return 'http://localhost:5281/' + cover.imagePath;
+    return  cover.imagePath;
 
   }
 

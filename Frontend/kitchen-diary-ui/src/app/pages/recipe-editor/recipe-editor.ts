@@ -446,8 +446,7 @@ deleteImage(imageId: number): void {
 }
 openImage(imagePath: string): void {
 
-  this.selectedImage =
-    'http://localhost:5281/' + imagePath;
+  this.selectedImage = imagePath;
 
 }
 closeImage(): void {

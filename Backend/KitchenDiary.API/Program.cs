@@ -7,9 +7,12 @@ using KitchenDiary.API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using KitchenDiary.API.Configurations;
 //using Microsoft.OpenApi;
 using System.Text;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.Configure<CloudinarySettings>(
+    builder.Configuration.GetSection("Cloudinary"));
 builder.Configuration.Sources.Clear();
 
 builder.Configuration
@@ -65,9 +68,9 @@ builder.Services
     .AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
         
-        options.Password.RequireUppercase = true;
-        options.Password.RequireLowercase = true;
-        options.Password.RequiredLength = 6;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequiredLength = 4;
         options.Password.RequireDigit = false;
         options.Password.RequireNonAlphanumeric = false;
         options.User.RequireUniqueEmail = true;
@@ -105,7 +108,7 @@ builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddHttpContextAccessor();
-
+builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddCors(options =>
 {
