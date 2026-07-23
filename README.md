@@ -38,7 +38,7 @@ https://github.com/ayeshaiqbal09/KitchenDiary
 
 # 📸 Screenshots
 
-> Add screenshots here after uploading them to the repository.
+> 
 
 ### Home Page
 
@@ -50,11 +50,9 @@ https://github.com/ayeshaiqbal09/KitchenDiary
 
 ![Recipe Details](screenshots/details.png)
 
----
+### Register Page
 
-### Recipe Editor
-
-![Recipe Editor](screenshots/editor.png)
+![Register Page].(screenshots/register.png)
 
 ---
 
@@ -243,7 +241,7 @@ https://kitchendiary-w72v.onrender.com/swagger/index.html
 
 # 👩‍💻 Author
 
-**Ayesha**
+**Ayesha Iqbal**
 
 GitHub
 
