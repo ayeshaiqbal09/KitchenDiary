@@ -1,4 +1,4 @@
 export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:5281/api'
+  production: true,
+  apiUrl: 'https://kitchendiary-w72v.onrender.com/api'
 };
