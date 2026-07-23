@@ -107,7 +107,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AngularPolicy", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins(
+    "https://kitchen-diary-lovat.vercel.app"
+)
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
