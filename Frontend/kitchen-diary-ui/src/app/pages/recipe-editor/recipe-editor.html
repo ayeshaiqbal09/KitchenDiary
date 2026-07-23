@@ -300,7 +300,7 @@
          <div class="image-card">
 
     <img
-        [src]="'http://localhost:5281/' + image.imagePath"
+        [src]="image.imagePath"
         class="recipe-image">
 
     <div class="image-actions">
@@ -514,7 +514,7 @@
         @for (image of recipe?.images ?? []; track image.id) {
 
             <img
-    [src]="'http://localhost:5281/' + image.imagePath"
+    [src]="image.imagePath"
     class="recipe-image"
     (click)="openImage(image.imagePath)">
 
